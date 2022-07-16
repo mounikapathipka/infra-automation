@@ -1,0 +1,65 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- checkout: self
+  persistCredentials: true
+
+- script: echo Hello, world , I am Mounika!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project. Mounika
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+-   task: AzureCLI@2
+    enabled: false
+    inputs:
+      azureSubscription: 'appservice'
+      scriptType: 'pscore'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        az --version
+        az account show
+        git --version
+- task: Bash@3
+  enabled: false
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      git config --global user.email "mounika.azure2022@gmail.com"
+      git config --global user.name "mounika pathipka"
+      git checkout -b master
+
+      git pull
+      echo 'new file '`date` >> testfile.txt
+      git add .
+      git commit -m "adding new file via CD"
+      # git push origin HEAD:master
+  displayName: 'Adding report to Git'
+- task : Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      git config --global user.email "mounika.azure2022@gmail.com"
+      git config --global user.name "mounikapathipka"
+      git checkout -b master
+      echo "removing the file from repo branch"
+      rm -rf "testfile.txt"
+      git add .
+      git commit -m "removing the file"
+  displayName: 'Deleting file from repo'
+
+
+
+
