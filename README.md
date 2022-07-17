@@ -2,7 +2,7 @@
 
 # To set branch permissions
 
-we need give Allow access to the build user.
+we need give Edit Policies Allow access to the build user.
 
 ![image](https://user-images.githubusercontent.com/103050030/179405899-fcc68eae-856d-45d3-b412-0e0f6455537b.png)
 
