@@ -1,0 +1,38 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- bash: az --version
+  displayName: 'Show Azure CLI version'
+
+- bash: az devops configure --defaults organization=$(System.TeamFoundationCollectionUri) project=$(System.TeamProject) --use-git-aliases true
+  displayName: 'Set default Azure DevOps organization and project'
+
+- bash: |
+    echo "*******************  build pepelines list ******************* "
+    az pipelines build list
+    echo "******************* AZURE REPO list **********************************"
+    az repos list
+    echo "******************* sets the minimum number of required approvals to 2 for pull requests in the master branch of the Insurence repository. **********************************"
+    az repos policy approver-count create --allow-downvotes true --blocking true --branch master --creator-vote-counts true --enabled true --minimum-approver-count 2 --repository-id f06bfca8-a093-47b2-b92f-3672b01a9fb3 --reset-on-source-push false --output table
+
+    echo "******************* create and update work item linking policies for a branch  master of the Insurence repository. **********************************"
+    az repos policy work-item-linking create --blocking true --branch master --repository-id f06bfca8-a093-47b2-b92f-3672b01a9fb3 --enabled true
+
+
+    echo "******************* AZURE REPO POLICY list **********************************"
+    az repos policy list --repository-id f06bfca8-a093-47b2-b92f-3672b01a9fb3 --branch master --output table
+
+
+#    git pr list
+  displayName: 'Show build list and PRs'
+  env:
+    AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
