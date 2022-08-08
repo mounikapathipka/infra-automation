@@ -60,12 +60,13 @@ steps:
       git commit -m "removing the file"
 - powershell: |
     ## get the branch name
+    $branch_name= &git rev-parse --abbrev-ref HEAD 
     BRANCH_NAME=$(echo "$(System.PullRequest.TargetBranch)" | awk -F/ '{print $NF}')
     ## check branch name starts with HF- or US- or BugFix- .. etc
     $BRANCH_NAME_STARTS_WITH_ARR = @('HF-','US-','BugFix-');
     $IS_VALID_BRANCH= FALSE;
     foreach ($EACH_BRANCH_NAME in $BRANCH_NAME_STARTS_WITH_ARR) {
-      if (BRANCH_NAME.StartsWith(EACH_BRANCH_NAME)) {
+      if (branch_name.StartsWith(EACH_BRANCH_NAME)) {
           $IS_VALID_BRANCH=TRUE;
       }
     }
