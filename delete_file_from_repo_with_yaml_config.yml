@@ -58,7 +58,22 @@ steps:
       rm -rf "testfile.txt"
       git add .
       git commit -m "removing the file"
-  displayName: 'Deleting file from repo'
+- powershell: |
+    ## get the branch name
+    BRANCH_NAME=$(echo "$(System.PullRequest.TargetBranch)" | awk -F/ '{print $NF}')
+    ## check branch name starts with HF- or US- or BugFix- .. etc
+    $BRANCH_NAME_STARTS_WITH_ARR = @('HF-','US-','BugFix-');
+    $IS_VALID_BRANCH= FALSE;
+    foreach ($EACH_BRANCH_NAME in $BRANCH_NAME_STARTS_WITH_ARR) {
+      if (BRANCH_NAME.StartsWith(EACH_BRANCH_NAME)) {
+          $IS_VALID_BRANCH=TRUE;
+      }
+    }
+    ## Get work item from branch name
+    ## check work item is present or not
+    ## https://docs.microsoft.com/en-us/rest/api/azure/devops/wit/work-items/get-work-item?view=azure-devops-rest-6.0&tabs=HTTP
+    ## if not present , throw error
+
 
 
 
