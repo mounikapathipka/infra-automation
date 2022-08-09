@@ -1,1 +1,43 @@
-some content
+# This script is will check, whether the given branch name is falowing as per naming conventions or not. If not, fail the build.
+# https://aka.ms/yaml
+# Example branch names
+# BF-82206_Aleradf_3434_Toyota
+# US-82206_Aleradf_3434_Toyota
+# HF-82206_Aleradf_3434_Toyota
+
+
+trigger:
+- HF-*
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+- task: PowerShell@2
+  name: "BranchNamePolicy"  
+  inputs:
+    targetType: 'inline'
+    script: |
+     $regex= "^refs/heads/(US|BF|PR|HF){1}[-_]\d{5}[-_][a-zA-Z0-9_-]+$"
+     $branch_name= "$(Build.SourceBranch)"
+     $is_valid_branch= $branch_name -match $regex
+     Write-Host "$branch_name is $is_valid_branch"
+      # Write your PowerShell commands here.      
+     Write-Host "Hello World"
+     if($is_valid_branch){
+       Write-Host "Hello World"
+       Write-Host "else exit 0"
+       exit 0
+     }else {
+       Write-Host "else exit 1"
+       exit 1
+     }
+- bash: 
+    echo "$(Build.SourceBranch)" 
